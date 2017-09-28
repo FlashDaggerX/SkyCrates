@@ -24,16 +24,18 @@ public class Sky extends JavaPlugin {
 
 	private File file;
 	private FileConfiguration pools;
-
+	
 	@Override
 	public void onEnable() {
 		inst = this;
+		inst.getServer().getConsoleSender().sendMessage(
+				ChatColor.YELLOW + "[SkyCrates] Server Version: " + Bukkit.getVersion());
 
 		performFileCreation();
 		
-		if (Bukkit.getVersion().equalsIgnoreCase("1.8.8")) {
+		if (Bukkit.getVersion().equalsIgnoreCase("git-Spigot-21fe707-e1ebe52 (MC: 1.8.8)")) {
 			cmd = new com.github.flashdaggerx.generator.v1_8.Commands();
-		} else if (Bukkit.getVersion().equalsIgnoreCase("1.11.2")) {
+		} else if (Bukkit.getVersion().equalsIgnoreCase("git-Spigot-3fb9445-6e3cec8 (MC: 1.11.2)")) {
 			cmd = new com.github.flashdaggerx.generator.v1_11.Commands();
 		}
 		inst.getCommand("skycrates").setExecutor(cmd);
