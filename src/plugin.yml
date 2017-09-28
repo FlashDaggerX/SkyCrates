@@ -1,0 +1,8 @@
+name: SkyCrates
+version: 1.2.8
+author: FlashDaggerX
+main: com.github.flashdaggerx.Sky
+commands:
+  skycrates:
+    description: Changes the settings of SkyCrates
+    usage:
