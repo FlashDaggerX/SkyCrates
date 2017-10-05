@@ -39,7 +39,7 @@ public class Sky extends JavaPlugin {
 			cmd = new com.github.flashdaggerx.generator.v1_11.Commands();
 		}
 		inst.getCommand("skycrates").setExecutor(cmd);
-		inst.getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[SkyCrates] Completed.");
+		inst.getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[SkyCrates] Launch completed.");
 	}
 
 	public static Sky getInstance() {
@@ -57,6 +57,7 @@ public class Sky extends JavaPlugin {
 
 			file = new File(inst.getDataFolder(), "pools.yml");
 			pools = YamlConfiguration.loadConfiguration(file);
+			
 			defPool = new ArrayList<String>();
 			defPool.add("diamond");
 			pools.set("pool.get", defPool);
@@ -66,6 +67,8 @@ public class Sky extends JavaPlugin {
 			defPoolLoc.add("0");
 			defPoolLoc.add("120");
 			defPoolLoc.add("0");
+			defPoolLoc.add("60");
+			defPoolLoc.add("get");
 			pools.set("pool.locations.test", defPoolLoc);
 			pools.options().copyDefaults(true);
 

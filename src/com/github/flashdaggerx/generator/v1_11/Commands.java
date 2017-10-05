@@ -44,11 +44,12 @@ public class Commands implements CommandExecutor {
 			if (cmd.getName().equalsIgnoreCase("skycrates")) {
 				if (args.length == 0) {
 					sen.sendMessage(ChatColor.RED + "/skycrates <function>\n" + "ref - Refresh the config\n"
-							+ "agen (bound) (player) - Spawn a chest at the $(player) location\n"
-							+ "rgen (bound) - Spawns a chest within bounds\n"
-							+ "cgen (name) (delay) (bound) (world) - Starts generation (per $(delay))\n"
-							+ "cgen (name) - Deletes generation task\n" + "cgen - Lists currently active tasks."
-							+ "pgen (poolname) (bound) - Generates a chest at pool location\n");
+							+ "agen (lootpool) (bound) (player) - Spawn a chest at the $(player) location\n"
+							+ "rgen (lootpool) (bound) - Spawns a chest within bounds\n"
+							+ "cgen (name) (lootpool) (delay) (bound) (world) - Starts generation (per $(delay))\n"
+							+ "cgen (name) (bound) - Starts generation from the location pool\n"
+							+ "cgen (name) - Deletes generation task\n"
+							+ "cgen - Lists currently active tasks.");
 					return true;
 				}
 				if (args[0].equalsIgnoreCase("ref")) {
@@ -60,8 +61,6 @@ public class Commands implements CommandExecutor {
 					doRGen(args);
 				} else if (args[0].equalsIgnoreCase("cgen")) {
 					doCGen(args);
-				} else if (args[0].equalsIgnoreCase("pgen")) {
-					doPGen(args);
 				} else {
 					p.sendMessage(ChatColor.RED + "[SkyCrates] Bad Arguments.");
 				}
@@ -77,25 +76,30 @@ public class Commands implements CommandExecutor {
 	}
 
 	private void doAGen(String[] args) {
+		String lootpool;
 		Integer bound;
 		try {
-			bound = Integer.parseInt(args[1]);
-			p = Bukkit.getServer().getPlayer(args[2]);
+			lootpool = args[1];
+			bound = Integer.parseInt(args[2]);
+			p = Bukkit.getServer().getPlayer(args[3]);
 			gen.getLocGen().decideWorld(p.getWorld());
 			gen.getLocGen().decideCoordinates(p.getLocation());
+			gen.getItemGen().decideItemPool(lootpool);
 			gen.getItemGen().decideItemStack(bound);
 			gen.generate();
 			p.sendMessage(ChatColor.GREEN + "[SkyCrates] A crate was recieved from " + sen.getName());
 		} catch (NumberFormatException | NullPointerException e) {
-			sen.sendMessage(ChatColor.RED + "[SkyCrates] (bound) or (player) was null.");
+			sen.sendMessage(ChatColor.RED + "[SkyCrates] (lootpool), (bound) or (player) was null.");
 			return;
 		}
 	}
 
 	private void doRGen(String[] args) {
+		String lootpool;
 		Integer bound;
+		lootpool = args[1]; //TODO Re-arrange arguments
 		try {
-			bound = Integer.parseInt(args[1]);
+			bound = Integer.parseInt(args[2]);
 		} catch (NumberFormatException e) {
 			sen.sendMessage(ChatColor.RED + "[SkyCrates] (bound) was not a number. Defaulting...");
 			bound = 1;
@@ -106,6 +110,7 @@ public class Commands implements CommandExecutor {
 			gen.getLocGen().decideWorld(Bukkit.getServer().getWorlds().get(0));
 		}
 		gen.getLocGen().decideCoordinates();
+		gen.getItemGen().decideItemPool(lootpool);
 		gen.getItemGen().decideItemStack(bound);
 		int x = gen.getLocGen().getLocation().getBlockX(),
 				y = gen.getLocGen().getLocation().getBlockY(),
@@ -118,24 +123,28 @@ public class Commands implements CommandExecutor {
 	@SuppressWarnings("deprecation")
 	private void doCGen(String[] args) {
 		String name;
+		String lootpool;
 		Integer delay;
 		Integer bound;
 		World world;
 		Integer id;
-		if (args.length == 5 && isPlayer) {
+		if (args.length == 6 && isPlayer) {
 			try {
 				name = args[1];
-				delay = Integer.parseInt(args[2]);
-				bound = Integer.parseInt(args[3]);
-				world = Bukkit.getServer().getWorld(args[4]);
+				lootpool = args[2];
+				delay = Integer.parseInt(args[3]);
+				bound = Integer.parseInt(args[4]);
+				world = Bukkit.getServer().getWorld(args[5]);
 			} catch (NumberFormatException | NullPointerException e) {
 				p.sendMessage("(name), (bound), (delay) or (world) was null. Defaulting...");
 				name = ("Task" + System.currentTimeMillis());
+				lootpool = "get";
 				delay = 60;
 				bound = 1;
 				world = Bukkit.getServer().getWorlds().get(0);
 			}
 			final String name2 = name;
+			final String lootpool2 = lootpool;
 			final World world2 = world;
 			final Integer bound2 = bound;
 			final Integer delay2 = delay;
@@ -155,21 +164,20 @@ public class Commands implements CommandExecutor {
 								.sendMessage(ChatColor.RED + "[SkyCrates] Task #" + this.getTaskId() + " has an NPE.");
 						this.cancel();
 					}
+					gen.getItemGen().decideItemPool(lootpool2);
 					gen.getItemGen().decideItemStack(bound2);
 					gen.generate();
 				}
 			}, 0, delay2 * 20);
-			sen.sendMessage(ChatColor.GREEN + "[SkyCrates] \"" + name + "\" was created! (Seconds: " + delay + ")");
+			sen.sendMessage(ChatColor.GREEN + "[SkyCrates] \"" + name2 + "\" was created! (Seconds: " + delay2 + ")");
 			tasks.put(name, id);
-		} else if (args.length == 4 && isPlayer) {
+		} else if (args.length == 3 && isPlayer) {
 			try {
 				name = args[1];
-				delay = Integer.parseInt(args[2]);
-				bound = Integer.parseInt(args[3]);
+				bound = Integer.parseInt(args[2]);
 			} catch (NumberFormatException | NullPointerException e) {
-				p.sendMessage("(name), (bound), (delay) or (world) was null. Defaulting...");
+				p.sendMessage("(name), (bound) or (world) was null. Defaulting...");
 				name = ("Task" + System.currentTimeMillis());
-				delay = 60;
 				bound = 1;
 			}
 			gen.refreshConfiguration();
@@ -177,8 +185,9 @@ public class Commands implements CommandExecutor {
 			loc = gen.getConfigs().getPoolList();
 			if (!(loc.getStringList("pool.locations." + name).isEmpty())) {
 				final String name2 = name;
+				final String lootpool2 = gen.getItemGen().getItemPool(name2);
 				final Integer bound2 = bound;
-				final Integer delay2 = delay;
+				final Integer delay2 = gen.getItemGen().getDelay(name2);
 				id = Bukkit.getScheduler().scheduleSyncRepeatingTask(Sky.getInstance(), new BukkitRunnable() {
 					@Override
 					public void run() {
@@ -189,12 +198,16 @@ public class Commands implements CommandExecutor {
 									ChatColor.RED + "[SkyCrates] Task \"" + this.getTaskId() + "\": has an NPE.");
 							this.cancel();
 						}
+						gen.getItemGen().decideItemPool(lootpool2);
 						gen.getItemGen().decideItemStack(bound2);
 						gen.generate();
 					}
 				}, 0, delay2 * 20);
-				sen.sendMessage(ChatColor.GREEN + "[SkyCrates] \"" + name + "\" was created! (Seconds: " + delay + ")");
+				sen.sendMessage(ChatColor.GREEN + "[SkyCrates] \"" + name2 + "\" was created! (Seconds: " + delay2 + ")");
 				tasks.put(name, id);
+			} else {
+				sen.sendMessage(
+						ChatColor.RED + "[SkyCrates] This pool does not exist in your configuration.");
 			}
 		} else if (args.length == 2) {
 			name = args[1];
@@ -214,20 +227,6 @@ public class Commands implements CommandExecutor {
 				sen.sendMessage(ChatColor.RED + "None.");
 			}
 		}
-	}
-
-	private void doPGen(String[] args) {
-		String name = args[1];
-		Integer bound;
-		try {
-			bound = Integer.parseInt(args[2]);
-		} catch (NumberFormatException e) {
-			sen.sendMessage(ChatColor.RED + "[SkyCrates] (bound) wasn't a number. Defaulting...");
-			bound = 10;
-		}
-		gen.getLocGen().decideCoordinatesAndWorld(name);
-		gen.getItemGen().decideItemStack(bound);
-		gen.generate();
 	}
 
 }

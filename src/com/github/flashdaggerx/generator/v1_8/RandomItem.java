@@ -43,6 +43,10 @@ public class RandomItem {
 		poolStack = file.getPoolList().getStringList("pool.get");
 		isInit = true;
 	}
+	
+	public void decideItemPool(String lootpool) {
+		poolStack = file.getPoolList().getStringList("pool." + lootpool);
+	}
 
 	public void decideItemStack(int bound) {
 		for (int i = 0; i < poolStack.size(); i++) {
@@ -94,5 +98,9 @@ public class RandomItem {
 	public int getDelay(String poolName) {
 		delay = Integer.parseInt(file.getPoolList().getStringList("pool.locations." + poolName).get(4));
 		return delay;
+	}
+	
+	public String getItemPool(String lootpool) {
+		return file.getPoolList().getStringList("pool.locations." + lootpool).get(6);
 	}
 }
