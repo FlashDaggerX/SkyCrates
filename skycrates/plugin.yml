@@ -1,0 +1,11 @@
+name: SkyCrates
+version: 1.2.8
+description: A crate generation plugin
+
+author: FlashDaggerX
+
+main: com.github.flashdaggerx.Sky
+commands:
+  skycrates:
+    description: Changes the settings of SkyCrates
+    usage:
