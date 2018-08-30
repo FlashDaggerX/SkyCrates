@@ -7,59 +7,70 @@ import com.github.fdx.sky.App;
 import com.github.fdx.sky.pool.Pool.ItemValue;
 
 import org.bukkit.Material;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.MemoryConfiguration;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 public class PoolFile {
     private File poolFile;
-    private YamlConfiguration yaml;
+    private FileConfiguration yaml;
     
-    public PoolFile() { 
-        /*  TODO: Make sure the configuration is corrected if there's bad user input. */
-        this.poolFile = new File(App.dataFolder, "pool.yml");
+    public PoolFile(String name) {
+        this.poolFile = new File(App.dataFolder, name);
 
         if (!this.poolFile.exists()) {
-            try { 
-                if (this.poolFile.createNewFile()) {
-                    yaml = YamlConfiguration.loadConfiguration(this.poolFile);
+            this.poolFile.getParentFile().mkdirs();
+        }
 
-                    // TODO: Is this how paths work?
-                    MemoryConfiguration m = new MemoryConfiguration();
-                    m.addDefault("x_max", 500);
-                    m.addDefault("z_max", 500);
+        try {
+			if (this.poolFile.createNewFile()) {
+                System.out.println(name + " doesn't exist. Creating...");
+                yaml = new YamlConfiguration();
 
-                    Pool p = new Pool();
-                    p   .add(Material.WOOD,     ItemValue.LOW)
-                        .add(Material.WOOD_AXE, ItemValue.LOW)
-                        .add(Material.WATCH,    ItemValue.LOW);
-                    
-                    m.createSection("pool", p.getPool());
+                MemoryConfiguration m = new MemoryConfiguration();
+                m.addDefault("x-max", 500);
+                m.addDefault("z-max", 500);
 
-                    yaml.addDefaults(m);
-                }
-            } catch (IOException e) { e.printStackTrace(); }
-        } else yaml = YamlConfiguration.loadConfiguration(this.poolFile);
+                Pool p = new Pool();
+                p   .add(Material.WOOD,     ItemValue.LOW)
+                    .add(Material.WOOD_AXE, ItemValue.LOW)
+                    .add(Material.WATCH,    ItemValue.LOW);
+                
+                m.createSection("pool.default", p.getPool());
+
+                m.options().copyDefaults(true);
+
+                yaml.load(this.poolFile);
+                yaml.setDefaults(m);
+                yaml.options().copyDefaults(true);
+
+                save();
+            } else yaml = YamlConfiguration.loadConfiguration(this.poolFile);
+		} catch (IOException | InvalidConfigurationException e) {
+			e.printStackTrace();
+        }
     }
 
     public void setXMax(int val) {
-        yaml.set("x_max", val);
+        yaml.set("x-max", val);
         save();
     }
 
     public void setZMax(int val) {
-        yaml.set("z_max", val);
+        yaml.set("z-max", val);
         save();
     }
 
     public int getXMax() {
-        return yaml.getInt("x_max");
+        return yaml.getInt("x-max");
     }
 
     public int getZMax() {
-        return yaml.getInt("z_max");
+        return yaml.getInt("z-max");
     }
 
-    void save() {
+    private void save() {
         try {
             yaml.save(this.poolFile);
         } catch (IOException e) { e.printStackTrace(); };

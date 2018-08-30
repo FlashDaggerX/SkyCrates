@@ -1,6 +1,0 @@
-#Specifies bounds for randomized generation
-x-max: 500
-z-max: 500
-
-#Set to true to reset the configuration on reload
-reset: false

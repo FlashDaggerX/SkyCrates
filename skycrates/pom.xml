@@ -75,10 +75,9 @@
 
         <resources>
             <resource>
-                <directory>.</directory>
+                <directory>src/main/rescources</directory>
                 <includes>
                     <include>plugin.yml</include>
-                    <include>config.yml</include>
                 </includes>
             </resource>
         </resources>

@@ -15,14 +15,14 @@ import org.bukkit.Material;
 public class Pool {
     public enum ItemValue {LOW, NORMAL, GREAT, HIGH};
     
-    private HashMap<Material, Pool.ItemValue> items;
+    private HashMap<Material, String> items;
 
     public Pool() {
         this.items = new HashMap<>();
     }
     
     public Pool add(Material item, Pool.ItemValue val) {
-        items.put(item, val);
+        items.put(item, val.name());
         return this;
     }
 
@@ -35,7 +35,7 @@ public class Pool {
         return items.keySet();
     }
 
-    public Collection<Pool.ItemValue> getItemValues() {
+    public Collection<String> getItemValues() {
         return items.values();
     }
 
@@ -55,7 +55,7 @@ public class Pool {
     }
 
     @Deprecated
-    public HashMap<Material, Pool.ItemValue> getPool() {
+    public HashMap<Material, String> getPool() {
         return items;
     }
 }
