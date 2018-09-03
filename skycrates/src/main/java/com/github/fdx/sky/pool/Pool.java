@@ -1,9 +1,10 @@
 package com.github.fdx.sky.pool;
 
-import java.util.Collection;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Set;
+import java.util.List;
+
+import com.github.fdx.sky.pool.Treasure.ItemValue;
 
 import org.bukkit.Material;
 
@@ -13,55 +14,50 @@ import org.bukkit.Material;
  * @author FlashDaggerX
  */
 public class Pool {
-    public enum ItemValue {LOW, NORMAL, GREAT, HIGH};
-    
-    private HashMap<Material, String> items;
     private String name;
-    
+
+    private List<Treasure> pool;
+
     public Pool(String name) {
         this.name = name;
-        this.items = new HashMap<>();
+
+        this.pool = new ArrayList<>();
+    }
+
+    public void add(Material material, ItemValue worth) {
+        this.pool.add(new Treasure(material, worth));
     }
     
-    public Pool add(Material item, Pool.ItemValue val) {
-        items.put(item, val.name());
-        return this;
+    public void add(Treasure treasure) {
+        this.pool.add(treasure);
     }
 
-    public Pool del(Object item) {
-        items.remove(item);
-        return this;
-    }
+    public boolean del(Material material) {
+        Iterator<Treasure> iter = this.pool.iterator();
 
-    public Set<Material> getItems() {
-        return items.keySet();
-    }
-
-    public Collection<String> getItemValues() {
-        return items.values();
-    }
-
-    public int getIndex(Object item) {
-        Iterator<Material> i = getItems().iterator();
+        Treasure current;
         int index = 0;
+        while (iter.hasNext()) {
+            current = iter.next();
 
-        while (i.hasNext()) {
-            if (i.next().name().equals(item)) {
-                break;
-            }
+            if (current.material.equals(material)) break;
 
             index++;
         }
 
-        return index;
+        if (!(index == this.pool.size())) {
+            this.pool.remove(index);
+            return true;
+        }
+
+        return false;
     }
 
-    public String getName() {
+    public String name() {
         return this.name;
     }
 
-    @Deprecated
-    public HashMap<Material, String> getPool() {
-        return this.items;
+    public List<Treasure> pool() {
+        return this.pool;
     }
 }

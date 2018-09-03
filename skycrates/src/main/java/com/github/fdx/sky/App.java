@@ -1,6 +1,9 @@
 package com.github.fdx.sky;
 
 import java.io.File;
+import java.io.IOException;
+
+import com.github.fdx.sky.pool.PoolFile;
 
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -17,6 +20,15 @@ public class App extends JavaPlugin {
     public void onEnable() {
         App.INST = this;
         App.DATA = getDataFolder();
+
+        if (!App.DATA.exists()) App.DATA.mkdir();
+
+        try {
+            PoolFile p = new PoolFile();
+            p.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
     }
 
     @Override
