@@ -16,8 +16,10 @@ public class Pool {
     public enum ItemValue {LOW, NORMAL, GREAT, HIGH};
     
     private HashMap<Material, String> items;
-
-    public Pool() {
+    private String name;
+    
+    public Pool(String name) {
+        this.name = name;
         this.items = new HashMap<>();
     }
     
@@ -54,8 +56,12 @@ public class Pool {
         return index;
     }
 
+    public String getName() {
+        return this.name;
+    }
+
     @Deprecated
     public HashMap<Material, String> getPool() {
-        return items;
+        return this.items;
     }
 }
