@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 
 import com.github.fdx.sky.pool.PoolFile;
+import com.github.fdx.sky.pool.PoolFile.Mode;
 
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -13,6 +14,8 @@ public class App extends JavaPlugin {
     public static App INST;
     /** The plugin's data folder, as defined by Spigot. */
     public static File DATA;
+
+    private PoolFile pool;
 
     public App() {}
 
@@ -24,11 +27,8 @@ public class App extends JavaPlugin {
         if (!App.DATA.exists()) App.DATA.mkdir();
 
         try {
-            PoolFile p = new PoolFile();
-            p.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+            pool = new PoolFile(Mode.N);
+		} catch (IOException e) { e.printStackTrace(); }
     }
 
     @Override
