@@ -8,16 +8,17 @@ import com.github.fdx.sky.pool.Treasure.ItemValue;
 
 import org.bukkit.Material;
 
-/**
- * A builder for item pools.
- * 
- * @author FlashDaggerX
- */
+/** @author FlashDaggerX */
 public class Pool {
     private String name;
 
     private List<Treasure> pool;
 
+    /**
+     * Collects treasures at their value.
+     * 
+     * @param name The name of the treasure pool.
+     */
     public Pool(String name) {
         this.name = name;
 

@@ -3,19 +3,18 @@ package com.github.fdx.sky;
 import java.io.File;
 import java.io.IOException;
 
+import com.github.fdx.sky.generator.DecideItem;
 import com.github.fdx.sky.pool.PoolFile;
-import com.github.fdx.sky.pool.PoolFile.Mode;
 
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.plugin.java.JavaPlugin;
 
+/** @author FlashDaggerX */
 public class App extends JavaPlugin {
     /** The plugin instance. */
     public static App INST;
     /** The plugin's data folder, as defined by Spigot. */
     public static File DATA;
-
-    private PoolFile pool;
 
     public App() {}
 
@@ -27,7 +26,7 @@ public class App extends JavaPlugin {
         if (!App.DATA.exists()) App.DATA.mkdir();
 
         try {
-            pool = new PoolFile(Mode.N);
+            new DecideItem(new PoolFile("defaultpool.json", true));
 		} catch (IOException e) { e.printStackTrace(); }
     }
 
