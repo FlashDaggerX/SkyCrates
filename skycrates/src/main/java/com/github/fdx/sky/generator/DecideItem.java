@@ -16,8 +16,7 @@ public class DecideItem {
         try {
             JsonReader reader = this.poolFile.createReader();
 
-            int x = this.poolFile.getMaxAxis(reader, 'x');
-            System.out.println(x);
+            this.poolFile.getMaxAxis(reader, 'x');
 
             reader.close();
 		} catch (IOException e) { e.printStackTrace(); }
