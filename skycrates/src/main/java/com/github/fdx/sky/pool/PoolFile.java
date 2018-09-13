@@ -11,9 +11,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.github.fdx.sky.App;
+import com.github.fdx.sky.pool.Treasure.ItemValue;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
+
+import org.bukkit.Material;
 
 /** @author FlashDaggerX */
 public class PoolFile {
@@ -49,7 +52,8 @@ public class PoolFile {
     }
 
     public Double[] getMaxAxis(JsonReader reader) {
-        List<Object> loc = scanDocument(reader, (current) -> {
+        List<Object> loc = scanDocument(reader, 
+        (current) -> {
             if (current.name.equalsIgnoreCase(Settings.MAXAXIS.val)) {
                 if (current.type.equals(JsonToken.NUMBER)) {
                     return current.obj;
@@ -60,7 +64,17 @@ public class PoolFile {
             return null;
         });
 
-        return loc.toArray(new Double[3]);
+        return loc.toArray(new Double[loc.size()]);
+    }
+
+    public Treasure[] getItems(JsonReader reader, String poolName) {
+        List<Object> items = scanDocument(reader,
+        (current) -> {
+            System.out.println(current.type + ":" + current.obj + "[" + current.name + "]");
+            return null;
+        });
+
+        return items.toArray(new Treasure[items.size()]);
     }
 
     /** 
@@ -111,6 +125,11 @@ public class PoolFile {
     private void writeNewFile(JsonWriter writer) throws IOException {
         writer.setIndent("    ");
     
+        Pool defaultPool = new Pool("defaultPool");
+        defaultPool.add(Material.WOOD, ItemValue.NORMAL, 5);
+        defaultPool.add(Material.WATCH, ItemValue.NORMAL, 1);
+        defaultPool.add(Material.DEAD_BUSH, ItemValue.WORTHLESS, 1);
+        
         writer.beginObject();
             writer.name(Settings.MAXAXIS.val).beginArray()
                 .value(50.0).value(-1.0).value(50.0)
@@ -120,7 +139,16 @@ public class PoolFile {
                 .beginObject()
                     .name(Settings.LABEL.val).value("test")
                     .name(Settings.ITEMS.val)
-                    .beginObject().endObject()
+                    .beginObject();
+                    
+                    for (Treasure p : defaultPool.pool()) {
+                        writer.name(p.material.name()).beginArray()
+                            .value(p.worth.rarity)
+                            .value(p.quantity)
+                        .endArray();
+                    }
+
+                    writer.endObject()
                 .endObject()
             .endArray();
         writer.endObject();
@@ -134,18 +162,18 @@ public class PoolFile {
 interface Shell {
 
     /**
-     * 
+     * An event used for peeking at different tokens.
      * @param current The current token
      * 
      * @return 
-     * {@code -1} Breaks scanDocument()'s loop. <p></p>
+     * {@code -1} Breaks document loop. <p></p>
      * {@code null} Do nothing. <p></p>
      * {@code Object} An evaluated object. It's added to the list.
      */
     public Object handleJSONToken(Token current); 
 }
 
-/** Describes an object from a PoolFile */
+/** Describes a JsonToken. */
 class Token { 
     public JsonToken type; public Object obj; String name;
 

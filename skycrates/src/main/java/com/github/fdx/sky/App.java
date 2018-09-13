@@ -3,7 +3,7 @@ package com.github.fdx.sky;
 import java.io.File;
 import java.io.IOException;
 
-import com.github.fdx.sky.generator.DecideItem;
+import com.github.fdx.sky.generator.GenerateCrate;
 import com.github.fdx.sky.pool.PoolFile;
 
 import org.bukkit.command.CommandExecutor;
@@ -26,7 +26,7 @@ public class App extends JavaPlugin {
         if (!App.DATA.exists()) App.DATA.mkdir();
 
         try {
-            new DecideItem(new PoolFile("defaultpool.json", true));
+            new GenerateCrate(new PoolFile("defaultpool.json", true));
 		} catch (IOException e) { e.printStackTrace(); }
     }
 

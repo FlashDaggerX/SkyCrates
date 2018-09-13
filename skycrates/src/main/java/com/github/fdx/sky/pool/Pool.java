@@ -28,6 +28,10 @@ public class Pool {
     public void add(Material material, ItemValue worth) {
         this.pool.add(new Treasure(material, worth));
     }
+
+    public void add(Material material, ItemValue worth, int quantity) {
+        this.pool.add(new Treasure(material, worth, quantity));
+    }
     
     public void add(Treasure treasure) {
         this.pool.add(treasure);
