@@ -7,6 +7,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.github.fdx.sky.App;
 import com.google.gson.stream.JsonReader;
@@ -16,7 +18,6 @@ import com.google.gson.stream.JsonWriter;
 /** @author FlashDaggerX */
 public class PoolFile {
     private File pool;
-    private boolean useDoc;
 
     /** Handles the JSON Item Pool
      * 
@@ -25,7 +26,6 @@ public class PoolFile {
      */
     public PoolFile(String name, boolean newFile) throws IOException {
         this.pool = new File(App.DATA, name);
-        this.useDoc = true;
 
         if (newFile) {
             if (this.pool.createNewFile()) writeNewFile(createWriter());
@@ -48,42 +48,64 @@ public class PoolFile {
         );
     }
 
-    public void getMaxAxis(JsonReader reader, char xyz) {
-        scanDocument(reader, (current) -> {
-            System.out.println(current.obj + ":" + current.type);
+    public Double[] getMaxAxis(JsonReader reader) {
+        List<Object> loc = scanDocument(reader, (current) -> {
+            if (current.name.equalsIgnoreCase(Settings.MAXAXIS.val)) {
+                if (current.type.equals(JsonToken.NUMBER)) {
+                    return current.obj;
+                } else if (current.type.equals(JsonToken.END_ARRAY)) {
+                    return -1;
+                }
+            }
+            return null;
         });
+
+        return loc.toArray(new Double[3]);
     }
 
-    /** Stops scanning the document. */
-    private void stopDocument() { this.useDoc = false; }
-
-    /** Scans the JSON document, without using Ctrl+C everywhere. */
-    private void scanDocument(JsonReader read, Shell handleObj) {
+    /** 
+     * Scans the JSON document, without using Ctrl+C everywhere.
+     * When scanning, use {@code Object.equals()} to compare objects.
+     * 
+     * @return A list of objects obtained while scanning the document.
+     */
+    private List<Object> scanDocument(JsonReader read, Shell handleObj) {
         read.setLenient(true);
         
+        List<Object> retobj = new ArrayList<>();
+
         try {
-            JsonToken token = JsonToken.NULL; Token current = new Token(token, 'T');
+            JsonToken token = JsonToken.NULL; 
+            Token current = new Token().type(token).name("NULL");
+            Object listen = null;   // The object returned by handleJSONToken()
 
-            while (token != JsonToken.END_DOCUMENT && this.useDoc) {
+            while (token != JsonToken.END_DOCUMENT) {
+                token = read.peek(); current.obj(null);
 
-                token = read.peek();
                 switch(token) {
-                    case BEGIN_OBJECT:  current = new Token(token, '{'); read.beginObject(); break;
-                    case BEGIN_ARRAY:   current = new Token(token, '['); read.beginArray(); break;
-                    case NAME:          current = new Token(token, read.nextName()); break;
-                    case NUMBER:        current = new Token(token, read.nextDouble()); break;
-                    case BOOLEAN:       current = new Token(token, read.nextBoolean()); break;
-                    case STRING:        current = new Token(token, read.nextString()); break;
-                    case END_ARRAY:     current = new Token(token, ']'); read.endArray(); break;
-                    case END_OBJECT:    current = new Token(token, '}'); read.endObject();; break;
-                    default:            current = new Token(JsonToken.NULL, '~'); read.skipValue();
+                    case BEGIN_OBJECT:  current.type(token); read.beginObject(); break;
+                    case BEGIN_ARRAY:   current.type(token); read.beginArray(); break;
+                    case NAME:          current.type(token).name(read.nextName()); break;
+                    
+                    case NUMBER:        current.type(token).obj(read.nextDouble()); break;
+                    case BOOLEAN:       current.type(token).obj(read.nextBoolean()); break;
+                    case STRING:        current.type(token).obj(read.nextString()); break;
+                    
+                    case END_ARRAY:     current.type(token); read.endArray(); break;
+                    case END_OBJECT:    current.type(token); read.endObject(); break;
+                    default:            current.type(JsonToken.NULL); read.skipValue(); break;
+                } 
+                
+                if ((listen = handleObj.handleJSONToken(current)) != null) {
+                    if (listen.equals(-1)) break;
+                    
+                    retobj.add(listen);
                 }
-
-                handleObj.doWithJSONObject(current);
             }
-
-            this.useDoc = true;
+            
         } catch (IOException e) { e.printStackTrace(); }
+
+        return retobj;
     }
     
     private void writeNewFile(JsonWriter writer) throws IOException {
@@ -108,12 +130,28 @@ public class PoolFile {
 }
 
 /** A function interface that allows the processing of JSON objects. */
-@FunctionalInterface
-interface Shell { public void doWithJSONObject(Token current); }
+@FunctionalInterface 
+interface Shell {
+
+    /**
+     * 
+     * @param current The current token
+     * 
+     * @return 
+     * {@code -1} Breaks scanDocument()'s loop. <p></p>
+     * {@code null} Do nothing. <p></p>
+     * {@code Object} An evaluated object. It's added to the list.
+     */
+    public Object handleJSONToken(Token current); 
+}
 
 /** Describes an object from a PoolFile */
 class Token { 
-    public JsonToken type; public Object obj;
+    public JsonToken type; public Object obj; String name;
 
-    Token(JsonToken type, Object obj) { this.type =  type; this.obj = obj; }
+    Token() {}
+
+    public Token name(String name) { this.name = name; return this; }
+    public Token obj(Object obj) { this.obj = obj; return this;}
+    public Token type(JsonToken type) { this.type = type; return this;}
 }
