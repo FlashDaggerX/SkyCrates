@@ -6,8 +6,7 @@ import java.util.List;
 
 import com.github.fdx.sky.pool.PoolFile;
 import com.github.fdx.sky.pool.Treasure;
-import com.google.common.collect.Lists;
-import com.google.gson.stream.JsonReader;
+import com.github.fdx.sky.pool.scanner.Jumper;
 
 /** @author FlashDaggerX */
 public class GenerateCrate implements Generator {
@@ -21,14 +20,12 @@ public class GenerateCrate implements Generator {
         this.items = new ArrayList<>();
         
         try {
-            JsonReader reader = this.poolFile.createReader();
-            
-            // TODO: Not closing the reader continues the document scan from where it left off.
-            this.locations = this.poolFile.getMaxAxis(reader);
-            this.items = Lists.newArrayList(this.poolFile.getItems(reader, "defaultpool"));
+            Jumper jumper = new Jumper(this.poolFile.createReader());
 
-            System.out.println(this.locations);
-            reader.close();
+            // TODO: Not closing the reader continues the document scan from where it left off.
+            this.items = this.poolFile.getItems(jumper, "defaultpool");
+
+            jumper.close();
 		} catch (IOException e) { e.printStackTrace(); }
     }
 

@@ -9,6 +9,11 @@ public class Treasure {
 
         public double rarity;
         ItemValue(double rarity) { this.rarity = rarity; }
+
+        public ItemValue fromRarity(double val) {
+            for (ItemValue v : values()) { if (v.rarity == val) return v; }
+            return ItemValue.WORTHLESS;
+        }
     }
 
     public Material material;
