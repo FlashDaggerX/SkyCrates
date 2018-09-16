@@ -11,6 +11,9 @@ import com.google.gson.stream.JsonWriter;
 
 import org.bukkit.Material;
 
+/**
+ * Methods of writing to a PoolFile.
+ */
 public class Etcher implements Closeable {
     private JsonWriter writer;
 
@@ -53,7 +56,7 @@ public class Etcher implements Closeable {
             .endArray();
         writer.endObject();
     
-        writer.close();
+        close();
     }
 
 	@Override

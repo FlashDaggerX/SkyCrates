@@ -21,7 +21,7 @@ import com.google.gson.stream.JsonWriter;
 import org.bukkit.Material;
 
 /** @author FlashDaggerX */
-public class PoolFile {
+public class PoolReader {
     private File pool;
 
     /** Handles the JSON Item Pool
@@ -29,26 +29,30 @@ public class PoolFile {
      * @param mode The mode to open the file in.
      * @param newFile Are you creating a new file? (It can't already exist)
      */
-    public PoolFile(String name, boolean newFile) throws IOException {
+    public PoolReader(String name, boolean newFile) throws IOException {
         this.pool = new File(App.DATA, name);
 
         if (newFile) {
-            if (this.pool.createNewFile()) new Etcher(createWriter()).etchNewFile();
+            if (this.pool.createNewFile()) createEtcher().etchNewFile();
         }
     }
 
-    public JsonWriter createWriter() throws FileNotFoundException {
-        return new JsonWriter(
-            new OutputStreamWriter(
-                new FileOutputStream(this.pool)
+    public Etcher createEtcher() throws FileNotFoundException {
+        return new Etcher(
+            new JsonWriter(
+                new OutputStreamWriter(
+                    new FileOutputStream(this.pool)
+                )
             )
         );
     }
 
-    public JsonReader createReader() throws FileNotFoundException {
-        return new JsonReader(
-            new InputStreamReader(
-                new FileInputStream(this.pool)
+    public Jumper createJumper() throws FileNotFoundException {
+        return new Jumper(
+            new JsonReader(
+                new InputStreamReader(
+                    new FileInputStream(this.pool)
+                )
             )
         );
     }
