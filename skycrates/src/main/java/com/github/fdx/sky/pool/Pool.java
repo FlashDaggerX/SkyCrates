@@ -10,8 +10,6 @@ import org.bukkit.Material;
 
 /** @author FlashDaggerX */
 public class Pool {
-    private String name;
-
     private List<Treasure> pool;
 
     /**
@@ -20,8 +18,6 @@ public class Pool {
      * @param name The name of the treasure pool.
      */
     public Pool(String name) {
-        this.name = name;
-
         this.pool = new ArrayList<>();
     }
 
@@ -50,16 +46,12 @@ public class Pool {
             index++;
         }
 
-        if (!(index == this.pool.size())) {
+        if (index != this.pool.size()) {
             this.pool.remove(index);
             return true;
         }
 
         return false;
-    }
-
-    public String name() {
-        return this.name;
     }
 
     public List<Treasure> pool() {

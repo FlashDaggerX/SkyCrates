@@ -19,7 +19,7 @@ public class Treasure {
     public Material material;
 
     public ItemValue worth;
-    public int quantity;
+    public double quantity;
     
     public Treasure(Material material, ItemValue worth) {
         this.material = material;
