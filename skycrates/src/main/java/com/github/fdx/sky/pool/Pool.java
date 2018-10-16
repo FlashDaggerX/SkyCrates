@@ -17,7 +17,7 @@ public class Pool {
      * 
      * @param name The name of the treasure pool.
      */
-    public Pool(String name) {
+    public Pool() {
         this.pool = new ArrayList<>();
     }
 

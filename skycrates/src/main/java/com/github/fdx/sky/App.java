@@ -1,10 +1,6 @@
 package com.github.fdx.sky;
 
 import java.io.File;
-import java.io.IOException;
-
-import com.github.fdx.sky.generator.GenerateCrate;
-import com.github.fdx.sky.pool.PoolIO;
 
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -24,10 +20,6 @@ public class App extends JavaPlugin {
         App.DATA = getDataFolder();
 
         if (!App.DATA.exists()) App.DATA.mkdir();
-
-        try {
-            new GenerateCrate(new PoolIO("defaultpool.json", true));
-		} catch (IOException e) { e.printStackTrace(); }
     }
 
     @Override
