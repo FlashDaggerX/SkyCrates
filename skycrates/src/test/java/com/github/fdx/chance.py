@@ -9,12 +9,21 @@ rarity = {
 }
 
 def decide(seed=random()):
-    print("Chance Seed: {}\n".format(seed))
+    print("Chance Seed: {}".format(seed))
+    chance = {}
     for k in rarity:
-        chance = floor((seed * rarity[k]) * 100)
-        print("{}: {}".format(k, chance))
+        chance[k] = (seed * rarity[k])
+        print("{}: {}".format(k, chance[k]))
     
-    limiter = floor((seed * 100)**(1/2)*25)
-    print("\nLimiter: {}".format(limiter))
+    # The limiter algorithm. Decides whether the item is placed or not.
+    seed_s = random()
+    print("\nLimiter Seed: {}".format(seed_s))
+    limiter = (seed*2) * (chance["GREATEST"] * chance["GREAT"]) * 100
+    print("Limiter: {}".format(limiter))
+
+    for k in chance:
+        print("{}: {}".format(k, chance[k] > limiter))
+
+    print("---------\n")
 
 decide()

@@ -17,3 +17,8 @@ buildNumber.properties
 #
 **/.settings/
 **/.vscode/
+
+#
+# Python
+#
+**/__pycache__/
