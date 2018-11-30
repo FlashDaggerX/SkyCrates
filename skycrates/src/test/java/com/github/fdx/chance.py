@@ -49,7 +49,7 @@ def decide(seed=random()):
     """
     #chg = (rarity["GREATEST"]-chance["GREATEST"])/rarity["GREATEST"]
     #gbf = (chance["GREATEST"] * rarity["LESS"])
-    #yug = (rarity["LESS"]*chance["NORMAL"]) * chance["GREATEST"]
+    yug = (rarity["LESS"]*chance["NORMAL"]) * chance["GREATEST"]
     #yug_f = (rarity["LESS"]*rarity["NORMAL"]) * chance["GREATEST"]
 
     limiter = (seed*4) * yug

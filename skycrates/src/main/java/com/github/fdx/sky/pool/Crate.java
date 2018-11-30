@@ -1,29 +1,50 @@
 package com.github.fdx.sky.pool;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.Inventory;
 
 /** @author FlashDaggerX */
 public class Crate {
-    private List<Material> materials;
     private Pool pool;
+    private Rarity worth;
+    private Inventory inv;
 
-    public Crate(Pool p) {
-        this.materials = new ArrayList<>();
-        this.pool = p;
+    private Treasure crate;
+
+    /**
+     * Creates an item crate.
+     * @param pool The item pool.
+     * @param worth The crates' chance value.
+     */
+    public Crate(Pool pool, Rarity worth) {
+        this.pool = pool;
+        this.worth = worth;
+        this.crate = new Treasure(Material.CHEST, worth);
     }
 
-    /** Decides the items from the pool, at random. */
-    public void randomize() {
-        Random rand = new Random();
-        double seed = rand.nextDouble();
-        double chance = 0.0;
+    /**
+     * Creates an item crate.
+     * @param pool The item pool.
+     */
+    public Crate(Pool pool) {
+        this(pool, Rarity.NORMAL);
+    }
 
-        for (Treasure t : pool.pool()) {
-            // TODO: Figure out the chance algorithm. Reference chance.py in "test"
+    public Pool getPool() {
+        return pool;
+    }
+
+    /**
+     * 
+     * @return The crate's inventory.
+     */
+    public Inventory getChestInventory() {
+        if (inv == null) {
+            inv = Bukkit.createInventory(null, InventoryType.ENDER_CHEST);
         }
+
+        return inv;
     }
 }

@@ -1,60 +1,50 @@
 package com.github.fdx.sky.pool;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-
-import com.github.fdx.sky.pool.Treasure.ItemValue;
+import java.util.stream.Stream;
 
 import org.bukkit.Material;
 
 /** @author FlashDaggerX */
 public class Pool {
-    private List<Treasure> pool;
+    private List<Treasure> treasures;
 
-    /**
-     * Collects treasures at their value.
-     * 
-     * @param name The name of the treasure pool.
-     */
-    public Pool() {
-        this.pool = new ArrayList<>();
-    }
+    public Pool() {}
 
-    public void add(Material material, ItemValue worth) {
-        this.pool.add(new Treasure(material, worth));
-    }
-
-    public void add(Material material, ItemValue worth, int quantity) {
-        this.pool.add(new Treasure(material, worth, quantity));
-    }
-    
     public void add(Treasure treasure) {
-        this.pool.add(treasure);
+        treasures.add(treasure);
     }
 
-    public boolean del(Material material) {
-        Iterator<Treasure> iter = this.pool.iterator();
+    public void add(Material item, Rarity rarity, int quantity) {
+        treasures.add(new Treasure(item, rarity, quantity));
+    }
 
-        Treasure current;
+    public void add(Material item, Rarity rarity) { 
+        add(item, rarity, 1); 
+    }
+
+    public void remove(int index) {
+        treasures.remove(index);
+    }
+
+    public void remove(Material item) {
         int index = 0;
-        while (iter.hasNext()) {
-            current = iter.next();
+        for (Treasure treasure : treasures) {
+            if (treasure == null) {
+                index++;
+                continue;
+            }
 
-            if (current.material.equals(material)) break;
+            if (treasure.material == item) {
+                remove(index);
+                break;
+            }
 
             index++;
         }
-
-        if (index != this.pool.size()) {
-            this.pool.remove(index);
-            return true;
-        }
-
-        return false;
     }
 
-    public List<Treasure> pool() {
-        return this.pool;
+    public Stream<Treasure> getTreasures() {
+        return treasures.stream();
     }
 }
