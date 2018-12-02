@@ -1,37 +1,41 @@
 package com.github.fdx.sky.pool;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 
 /** @author FlashDaggerX */
 public class Crate {
-    private Pool pool;
-    private Rarity worth;
-    private Inventory inv;
+    /** The ID of the crate in the scheduler. */
+    public int id;
+    public Rarity worth;
 
-    private Treasure crate;
+    private Pool pool;
+    private Inventory inv;
 
     /**
      * Creates an item crate.
      * @param pool The item pool.
      * @param worth The crates' chance value.
      */
-    public Crate(Pool pool, Rarity worth) {
+    public Crate(int id, Pool pool, Rarity worth) {
+        this.id = id;
         this.pool = pool;
         this.worth = worth;
-        this.crate = new Treasure(Material.CHEST, worth);
     }
 
     /**
      * Creates an item crate.
      * @param pool The item pool.
      */
-    public Crate(Pool pool) {
-        this(pool, Rarity.NORMAL);
+    public Crate(int id, Pool pool) {
+        this(id, pool, Rarity.NORMAL);
     }
 
+    /**
+     * 
+     * @return The crates' selected item pool.
+     */
     public Pool getPool() {
         return pool;
     }

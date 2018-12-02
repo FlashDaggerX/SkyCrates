@@ -3,12 +3,11 @@ package com.github.fdx.sky.generator;
 import java.util.Random;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.World;
 
 /** @author FlashDaggerX */
 public class Position {
-    enum Cord { X, Z, Y };
-
     private World world;
     private int[] bounds;
 
@@ -22,16 +21,20 @@ public class Position {
         this(bounds, Bukkit.getServer().getWorlds().get(0));
     }
 
-    public int[] getPos() {
+    public Location getPos() {
         Random rand = new Random();
         int[] coord = new int[3];
 
-        int x = Cord.X.ordinal(), z = Cord.Z.ordinal(), y = Cord.Y.ordinal();
+        int x = 0, z = 1, y = 2;
 
         coord[x] = rand.nextInt(bounds[x]); 
         coord[z] = rand.nextInt(bounds[z]);
         coord[y] = world.getHighestBlockYAt(coord[x], coord[z]);
 
-        return coord;
+        return new Location(getWorld(), coord[x], coord[y], coord[z]);
+    }
+
+    public World getWorld() {
+        return world;
     }
 }
