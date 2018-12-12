@@ -6,7 +6,7 @@ package com.github.fdx.sky.pool;
  * @author FlashDaggerX
  */
 public enum Rarity {
-    NIL(0), LESS(1.5), NORMAL(1.0), GREAT(0.5), GREATEST(0.25);
+    NIL(0), LESS(1.75), NORMAL(1.5), GREAT(0.95), GREATEST(0.35);
 
     public double rarity;
     Rarity(double rarity) { this.rarity = rarity; }

@@ -19,9 +19,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 /** @author FlashDaggerX */
 public class CrateScheduler extends BukkitRunnable {
-    // TODO: Two seconds?
-    /** The refresh rate of the crate spawner. */
-    public static final long PERIOD = 1000;
+    /** The refresh rate of the crate spawner. It's 20 ticks per second. */
+    public static final long PERIOD = 20;
 
     private static Queue<Crate> CRATES = new LinkedList<>();
     // TODO: You have a crate ID tracker so you can fetch spawn times. 
@@ -88,10 +87,6 @@ public class CrateScheduler extends BukkitRunnable {
             if (state instanceof Chest) {
                 Chest chest = (Chest) state;
                 chest.getBlockInventory().setContents(items.decideItems());
-            } else {
-                Bukkit.broadcastMessage(
-                    ChatColor.RED + "There was a problem spawning crate. [ID] " + crate.id);
-                return;
             }
 
             Bukkit.broadcastMessage(
@@ -100,7 +95,7 @@ public class CrateScheduler extends BukkitRunnable {
                 ChatColor.RED + "[ID] " + crate.id);
         } else {
             Bukkit.broadcastMessage(
-                    ChatColor.RED + "Crate didn't spawn. [ID] " + crate.id);
+                ChatColor.RED + "Crate didn't spawn. [ID] " + crate.id);
         }
     }
 }
