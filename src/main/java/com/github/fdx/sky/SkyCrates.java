@@ -25,10 +25,10 @@ public class SkyCrates extends JavaPlugin {
 
     @Override
     public void onEnable() {
-     SkyCrates.INST = this;
-     SkyCrates.DATA = getDataFolder();
+        SkyCrates.INST = this;
+        SkyCrates.DATA = getDataFolder();
 
-        if ( SkyCrates.DATA.exists()) SkyCrates.DATA.mkdir();
+        if (!SkyCrates.DATA.exists()) SkyCrates.DATA.mkdir();
 
         CrateScheduler.queue(new Crate(10, new Pool()
             .add(Material.CHAINMAIL_LEGGINGS, Rarity.LESS, 10)

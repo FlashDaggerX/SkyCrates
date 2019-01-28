@@ -9,24 +9,30 @@ public class Treasure {
     public Material material;
 
     public Rarity worth;
-    public int quantity;
-    // TODO: Possibly add quality?
+    public int quantity, durability;
 
-    public Treasure(Material material, Rarity worth, int quantity) {
+    public Treasure(Material material, Rarity worth, int quantity, int durability) {
         this.material = material;
         this.worth = worth;
         this.quantity = quantity;
+        this.durability = durability;
     }
     
     public Treasure(Material material, Rarity worth) {
-        this(material, worth, 1);
+        this(material, worth, 1, 100);
     }
 
     public ItemStack getItem() {
-        return new ItemStack(material, quantity);
+        if (durability > Short.MAX_VALUE || durability < Short.MIN_VALUE) {
+            throw new NumberFormatException("Durability isn't an Integer!");
+        }
+
+        ItemStack item = new ItemStack(material, quantity);
+        item.setDurability((short) durability);
+        return item;
     }
 
-    public ItemStack getSpecialItem(ItemMeta itemMeta) {
+    public ItemStack getItem(ItemMeta itemMeta) {
         ItemStack item = getItem();
         item.setItemMeta(itemMeta);
 
