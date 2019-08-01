@@ -1,28 +1,22 @@
-#
 # Visual Studio Code
-#
 **/.settings/
 **/.vscode/
 **.code-workspace
 
-#
 # Python
-#
 **/__pycache__/
 
-# Ignored by Kyle Guarco <kyleguarco55@gmail.com>
-spigot-1.8.8-R0.1-SNAPSHOT.jar
-.classpath
-.project
-.project
-.travis.yml
-.editorconfig
-.mvn/timing.properties
-pom.xml.tag
-pom.xml.releaseBackup
-pom.xml.versionsBackup
-pom.xml.next
-release.properties
-dependency-reduced-pom.xml
-buildNumber.properties
+# (Maven) Java Project Files
 target/
+*.classpath
+*.project
+*.project
+*.travis.yml
+*.editorconfig
+
+# SCons Files
+*.sconsign.dblite
+
+# Binary Files, or just Java Archives
+bin/
+*.jar
