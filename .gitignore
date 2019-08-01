@@ -1,8 +1,23 @@
-# Crates
-skycrates/target
-spigot-1.8.8-R0.1-SNAPSHOT.jar
+#
+# Visual Studio Code
+#
+**/.settings/
+**/.vscode/
+**.code-workspace
 
-# Git stuff
+#
+# Python
+#
+**/__pycache__/
+
+# Ignored by Kyle Guarco <kyleguarco55@gmail.com>
+spigot-1.8.8-R0.1-SNAPSHOT.jar
+.classpath
+.project
+.project
+.travis.yml
+.editorconfig
+.mvn/timing.properties
 pom.xml.tag
 pom.xml.releaseBackup
 pom.xml.versionsBackup
@@ -10,15 +25,4 @@ pom.xml.next
 release.properties
 dependency-reduced-pom.xml
 buildNumber.properties
-.mvn/timing.properties
-
-#
-# Visual Studio Code
-#
-**/.settings/
-**/.vscode/
-
-#
-# Python
-#
-**/__pycache__/
+target/

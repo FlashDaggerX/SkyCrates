@@ -2,14 +2,16 @@ package com.github.fdx.sky.generator;
 
 import java.util.Random;
 
+import com.github.fdx.sky.value.ISeedable;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 
 /** @author FlashDaggerX */
-public class Position {
+class Position implements ISeedable {
     private World world;
-    private int[] bounds;
+    private int[] bounds; // [2]
 
     public Position(int[] bounds, World world) {
         this.bounds = bounds;
@@ -17,21 +19,19 @@ public class Position {
     }
 
     public Position(int[] bounds) {
-        // Get the First world.
+        // Get the First world, if no others are specified
         this(bounds, Bukkit.getServer().getWorlds().get(0));
     }
 
     public Location getPos() {
-        Random rand = new Random();
-        int[] coord = new int[3];
+        Random rand = rand();
+        int[] coord = new int[3]; // [3]
 
-        int x = 0, z = 1, y = 2;
+        coord[0] = rand.nextInt(bounds[0]);
+        coord[1] = rand.nextInt(bounds[1]);
+        coord[2] = world.getHighestBlockYAt(coord[0], coord[1]);
 
-        coord[x] = rand.nextInt(bounds[x]); 
-        coord[z] = rand.nextInt(bounds[z]);
-        coord[y] = world.getHighestBlockYAt(coord[x], coord[z]);
-
-        return new Location(getWorld(), coord[x], coord[y], coord[z]);
+        return new Location(getWorld(), coord[0], coord[2], coord[1]);
     }
 
     public World getWorld() {

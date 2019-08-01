@@ -1,19 +1,22 @@
-package com.github.fdx.sky.pool;
+package com.github.fdx.sky.treasure;
+
+import com.github.fdx.sky.value.AValue;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 /** @author FlashDaggerX */
-public class Treasure {
+public class Treasure extends AValue {
+    // Treasure doesn't implement "Seedable," since item generation
+    // is performed during crate selection.
     public Material material;
 
-    public Rarity worth;
     public int quantity, durability;
 
     public Treasure(Material material, Rarity worth, int quantity, int durability) {
+        super(worth);
         this.material = material;
-        this.worth = worth;
         this.quantity = quantity;
         this.durability = durability;
     }
@@ -28,7 +31,7 @@ public class Treasure {
         }
 
         ItemStack item = new ItemStack(material, quantity);
-        item.setDurability((short) durability);
+        if (durability != 0) item.setDurability((short) durability);
         return item;
     }
 
