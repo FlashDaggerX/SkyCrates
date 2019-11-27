@@ -2,14 +2,12 @@ package com.github.fdx.sky.generator;
 
 import java.util.Random;
 
-import com.github.fdx.sky.value.ISeedable;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 
 /** @author FlashDaggerX */
-class Position implements ISeedable {
+class Position {
     private World world;
     private int[] bounds; // [2]
 
@@ -24,7 +22,7 @@ class Position implements ISeedable {
     }
 
     public Location getPos() {
-        Random rand = rand();
+        Random rand = new Random();
         int[] coord = new int[3]; // [3]
 
         coord[0] = rand.nextInt(bounds[0]);

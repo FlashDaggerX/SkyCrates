@@ -4,10 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.github.fdx.sky.value.AValue;
-import com.github.fdx.sky.value.ISeedable;
 
 /** @author FlashDaggerX */
-public class Crate extends AValue implements ISeedable {
+public class Crate extends AValue {
     private List<Treasure> items;
     
     public Crate(Rarity worth) {
@@ -19,8 +18,13 @@ public class Crate extends AValue implements ISeedable {
         this.items = items;
     }
 
+    public void populate(Treasure[] items) {
+        this.items = new ArrayList<>();
+        for (Treasure t : items) this.items.add(t);
+    }
+
     public List<Treasure> decide() {
-        double seed = rand().nextDouble();
+        double seed = Math.random();
         for (Treasure t : items) {
             if (Math.ceil(seed*t.getRarity().rarity) == 0) {
                 items.remove(t);
