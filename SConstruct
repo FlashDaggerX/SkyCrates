@@ -14,4 +14,4 @@ env = Environment(
 
 classes = env.Java('target', 'src')
 
-env.Jar(target = 'bin/skycrates.jar', source = [ classes, 'plugin.yml' ])
+env.Jar(target = 'bin/skycrates.jar', source = [ classes, 'src/plugin.yml' ])
