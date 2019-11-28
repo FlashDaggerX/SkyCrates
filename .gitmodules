@@ -1,0 +1,3 @@
+[submodule "lib/WorldGuard"]
+	path = lib/WorldGuard
+	url = https://github.com/EngineHub/WorldGuard
